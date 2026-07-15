@@ -67,6 +67,22 @@ All data stays on your machine. Nothing is uploaded except the API calls you tri
 
 ---
 
+## TODO — self-host verification / eliminate API usage
+
+**Goal:** replace the paid verification APIs with a self-hosted checker, so validation is free and unlimited.
+
+**Why this is the hard part — it's about IP reputation, not the software.** When you validate an email you connect to the recipient's mail server and ask, over an SMTP handshake, "does this mailbox exist?" The server decides whether to answer honestly based on *who's asking* — specifically, the IP address the request comes from. Google Workspace and Microsoft 365 (which power ~70% of companies) keep blocklists of residential IP ranges and either refuse to answer or lie and say every address is valid, to prevent email harvesting. A home machine or home server has a residential IP, so it gets blocked no matter what software runs on it. That's exactly why the app currently leans on Hunter/ZeroBounce/Abstract: they probe from datacenter IPs that aren't blocked.
+
+**My idea of fix:** run an open-source verifier (e.g. [Reacher](https://github.com/reacherhq/check-if-email-exists)) on a **datacenter IP** and point the app at it via **Settings → API Keys → Reacher URL** (the code path already exists and takes top priority). Options to explore:
+
+- A free-tier cloud VM with a clean datacenter IP (needs port 25 outbound open).
+- A cheap VPS (~$4/mo) running the Reacher Docker image — see `setup_reacher.sh`.
+- Routing SMTP probes through an outbound relay/proxy on a datacenter IP instead of hosting the whole verifier.
+
+Once a Reacher URL is set, all lookups go through it and the API keys become optional.
+
+I'm still thinking about this, because I prefer to find a reliable way that costs 0 dollars.
+
 ## Project layout
 
 ```
