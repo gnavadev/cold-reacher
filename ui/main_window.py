@@ -444,7 +444,7 @@ class MainWindow(QMainWindow):
             lead.full_name, lead.company, lead.context, self._api_key,
             sender_name=self._user_name,
             sender_website=self._website,
-            extra_instructions=self._instructions,
+            instructions=self._instructions,
         )
         worker.log_message.connect(self._append_log)
         worker.result_ready.connect(lambda p: self._on_pitch_done(p, lead))
